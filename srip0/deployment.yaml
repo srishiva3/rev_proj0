@@ -19,7 +19,7 @@ spec:
         # Use a specific tag instead of latest
         image: srishiva20/myrepo1
         ports:
-        - containerPort: 80
+        - containerPort: 8000
         # Define resource requests and limits
         resources:
           requests:
@@ -48,6 +48,6 @@ spec:
     app: app
   ports:
   - protocol: TCP
-    port: 80
-    targetPort: 80
+    port: 8000
+    targetPort: 8000
   type: LoadBalancer
