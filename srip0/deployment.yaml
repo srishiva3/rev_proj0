@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+  labels:
+    app: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+      - name: app
+        # Use a specific tag instead of latest
+        image: srishiva20/myrepo1
+        ports:
+        - containerPort: 80
+        # Define resource requests and limits
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "100Mi"
+          limits:
+            cpu: "500m"
+            memory: "500Mi"
+        # Define liveness and readiness probes
+        # livenessProbe:
+        #   httpGet:
+        #     path: /health
+        #     port: 5000
+        # readinessProbe:
+        #   httpGet:
+        #     path: /ready
+        #     port: 5000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+spec: 
+  selector:
+    app: app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: LoadBalancer
