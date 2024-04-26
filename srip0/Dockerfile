@@ -1,8 +1,6 @@
 # Use the official Python image
 FROM python:3.9-slim
 
-# Set environment variables
-ENV PYTHONUNBUFFERED=1
 
 # Set the working directory
 WORKDIR /app
@@ -18,4 +16,4 @@ COPY . .
 EXPOSE 8000
 
 # Command to start FastAPI with Uvicorn
-CMD ["uvicorn", "your_fastapi_file:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
