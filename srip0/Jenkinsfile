@@ -7,7 +7,7 @@ pipeline {
         stage('checkout') {
             steps {
                 git branch: 'main',
-                url: 'https://github.com/srishiva3/project0.git'
+                url: 'https://github.com/srishiva3/rev_proj0.git'
             }
         }
         stage('Building the image and pushing to dockerhub') {
