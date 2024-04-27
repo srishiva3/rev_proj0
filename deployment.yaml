@@ -1,44 +1,65 @@
+# Deployment for FastAPI application
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app
+  name: fastapi-deployment
   labels:
-    app: app
+    app: fastapi
 spec:
-  replicas: 1
+  replicas: 1  # You can increase this for higher availability
   selector:
     matchLabels:
-      app: app
+      app: fastapi
   template:
     metadata:
       labels:
-        app: app
+        app: fastapi
     spec:
       containers:
-      - name: app
-        image: srishiva20/myrepo1:lts
+      - name: fastapi-container
+        image: srishiva20/myrepo1:lts  # Docker image reference
+        command: ["uvicorn"]
+        args: ["main:app", "--host", "0.0.0.0", "--port", "8000"]  # Start FastAPI
         ports:
-        - containerPort: 8000
-        resources:
+        - containerPort: 8000  # Port for FastAPI with Uvicorn
+        resources:  # Resource management
           requests:
             cpu: "100m"
             memory: "100Mi"
           limits:
             cpu: "500m"
             memory: "500Mi"
+        livenessProbe:  # Health check to ensure container is running
+          httpGet:
+            path: /health  # This endpoint should be defined in your FastAPI app
+            port: 8000
+          initialDelaySeconds: 15  # Wait for startup
+          periodSeconds: 30  # Check interval
+        readinessProbe:  # Health check to ensure container is ready to serve
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 30
+        imagePullPolicy: Always  # Pull latest image; good for development
+        env:  # Optional: define environment variables here, if needed
+          # Example:
+          # - name: DATABASE_URL
+          #   value: "sqlite:///./test.db"
 
 ---
 
+# Service to expose FastAPI to the outside world
 apiVersion: v1
 kind: Service
 metadata:
-  name: app
+  name: fastapi-service
 spec:
-  type: NodePort  # This change allows easy port-forwarding and direct access
+  type: NodePort  # Expose externally via NodePort
   selector:
-    app: app
+    app: fastapi  # Matches the Deployment label
   ports:
   - protocol: TCP
-    port: 8000       # Service port
-    targetPort: 8000  # Port on the container
-    nodePort: 30000
+    port: 8000  # The port on the service
+    targetPort: 8000  # The port on the container
+    nodePort: 30000  # Expose on this specific NodePort
