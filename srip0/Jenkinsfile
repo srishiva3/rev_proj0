@@ -1,8 +1,8 @@
-pipeline { 
+pipeline {
     environment {
-        IMAGE = "srishiva20/myrepo1"
+        IMAGE = "srishiva20/myrepo1:lts"
     }
-    agent any 
+    agent any
     stages {
         stage('checkout') {
             steps {
@@ -20,5 +20,5 @@ pipeline {
                 }
             }
         }
-    } 
+    }
 }
