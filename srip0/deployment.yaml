@@ -16,11 +16,9 @@ spec:
     spec:
       containers:
       - name: app
-        # Use a specific tag instead of latest
-        image: srishiva20/myrepo1
+        image: srishiva20/myrepo1:lts
         ports:
         - containerPort: 8000
-        # Define resource requests and limits
         resources:
           requests:
             cpu: "100m"
@@ -28,26 +26,19 @@ spec:
           limits:
             cpu: "500m"
             memory: "500Mi"
-        # Define liveness and readiness probes
-        # livenessProbe:
-        #   httpGet:
-        #     path: /health
-        #     port: 5000
-        # readinessProbe:
-        #   httpGet:
-        #     path: /ready
-        #     port: 5000
 
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
   name: app
-spec: 
+spec:
+  type: NodePort  # This change allows easy port-forwarding and direct access
   selector:
     app: app
   ports:
   - protocol: TCP
-    port: 8000
-    targetPort: 8000
-  type: LoadBalancer
+    port: 8000       # Service port
+    targetPort: 8000  # Port on the container
+    nodePort: 30000
